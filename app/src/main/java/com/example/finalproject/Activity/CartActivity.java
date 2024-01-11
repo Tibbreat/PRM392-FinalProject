@@ -76,7 +76,12 @@ public class CartActivity extends BaseActivity {
     }
 
     private void setVariable() {
-        binding.btnBack.setOnClickListener(v -> finish());
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 

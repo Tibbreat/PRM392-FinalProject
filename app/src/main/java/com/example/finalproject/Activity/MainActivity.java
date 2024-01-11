@@ -116,7 +116,8 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         list.add(issue.getValue(Foods.class));
                     }
-                    Log.d("Data: ", "Foods: " + list.toString());
+                    //Check data best food
+                    Log.d("Data: ", "Foods: " + list.size());
                     if (list.size() > 0) {
                         binding.bestFoodView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
                         RecyclerView.Adapter adapter = new BestFoodAdapter(list);
@@ -171,6 +172,7 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         prices.add(issue.getValue(Price.class));
                     }
+                    //Check Data price
                     Log.d("Data", "Prices: " + prices.toString());
                     ArrayAdapter<Price> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, prices);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -196,6 +198,7 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         locations.add(issue.getValue(Location.class));
                     }
+                    //Check Data Location
                     Log.d("Data", "Locations: " + locations.toString());
                     ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, locations);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
