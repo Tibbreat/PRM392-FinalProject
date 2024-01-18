@@ -1,6 +1,7 @@
 package com.example.finalproject.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,23 +41,38 @@ public class MainActivity extends BaseActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if (!isAccountExist()) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        } else {
+            initLocationSpinner();
+            initTimeSpinner();
+            initPriceSpinner();
+            initBestFood();
+            initCategory();
+            initVariable();
 
-        initLocationSpinner();
-        initTimeSpinner();
-        initPriceSpinner();
-        initBestFood();
-        initCategory();
-        initVariable();
 
+        }
 
     }
 
     private void initVariable() {
+        SharedPreferences preferences = getSharedPreferences("account", MODE_PRIVATE);
+        String username = preferences.getString("username", "");
+        binding.tvUsername.setText(username);
+
         binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                SharedPreferences preferences = getSharedPreferences("account", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.apply();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
             }
         });
         binding.btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +93,15 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this, CartActivity.class));
             }
         });
+    }
+
+    private boolean isAccountExist() {
+        SharedPreferences preferences = getSharedPreferences("account", MODE_PRIVATE);
+        String username = preferences.getString("username", null);
+        String password = preferences.getString("password", null);
+
+        // Kiểm tra xem username và password đã được lưu trong SharedPreferences chưa
+        return (username != null && password != null);
     }
 
     private void initTimeSpinner() {
@@ -116,7 +141,8 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         list.add(issue.getValue(Foods.class));
                     }
-                    Log.d("Data: ", "Foods: " + list.toString());
+                    //Check data best food
+                    Log.d("Data: ", "Foods: " + list.size());
                     if (list.size() > 0) {
                         binding.bestFoodView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
                         RecyclerView.Adapter adapter = new BestFoodAdapter(list);
@@ -171,6 +197,7 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         prices.add(issue.getValue(Price.class));
                     }
+                    //Check Data price
                     Log.d("Data", "Prices: " + prices.toString());
                     ArrayAdapter<Price> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, prices);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -196,6 +223,7 @@ public class MainActivity extends BaseActivity {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         locations.add(issue.getValue(Location.class));
                     }
+                    //Check Data Location
                     Log.d("Data", "Locations: " + locations.toString());
                     ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, locations);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

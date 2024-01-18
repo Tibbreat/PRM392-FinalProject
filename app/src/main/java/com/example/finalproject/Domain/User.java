@@ -1,19 +1,26 @@
 package com.example.finalproject.Domain;
 
-public class Users {
-    private int Id;
+public class User {
+    private String Id;
     private String Username;
     private String Email;
     private String Password;
 
-    public Users() {
+    public User() {
     }
 
-    public int getId() {
+    public User(String id, String username, String email, String password) {
+        Id = id;
+        Username = username;
+        Email = email;
+        Password = password;
+    }
+
+    public String getId() {
         return Id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         Id = id;
     }
 
